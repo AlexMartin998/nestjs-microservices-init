@@ -22,6 +22,7 @@ export class AuthController {
     response.send(user);
   }
 
+  // como el message patter, aqui reacciona con 1 validacion exitosa
   @UseGuards(JwtAuthGuard)
   @MessagePattern('validate_user')
   async validateUser(@CurrentUser() user: User) {

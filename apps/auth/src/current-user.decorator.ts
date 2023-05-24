@@ -7,6 +7,7 @@ export const getCurrentUserByContext = (context: ExecutionContext): User => {
     return context.switchToHttp().getRequest().user;
   }
   if (context.getType() === 'rpc') {
+    // rabbitmq
     return context.switchToRpc().getData().user;
   }
 };
