@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RmqOptions, Transport } from '@nestjs/microservices';
+import { RmqContext, RmqOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -16,5 +16,13 @@ export class RmqService {
         persistent: true, // tener 1 lista de messages
       },
     };
+  }
+
+  ack(context: RmqContext) {
+    const channel = context.getChannelRef();
+    const originalMessage = context.getMessage();
+
+    // reconocemos manualmente el message y lugo podemos eliminarlo de la queue
+    channel.ack(originalMessage);
   }
 }
