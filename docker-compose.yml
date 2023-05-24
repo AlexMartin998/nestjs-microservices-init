@@ -13,6 +13,9 @@ services:
       - mongodb-primary
       - mongodb-secondary
       - mongodb-arbiter
+      - billing
+      - auth
+      - rabbitmq
     volumes:
       - .:/usr/src/app # para tener los cambios de codigo del host en el container en vivo
       - /usr/src/app/node_modules
@@ -31,15 +34,35 @@ services:
       - mongodb-primary
       - mongodb-secondary
       - mongodb-arbiter
+      - rabbitmq
+      - auth
     volumes:
       - .:/usr/src/app # para tener los cambios de codigo del host en el container en vivo
+      - /usr/src/app/node_modules
+
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: npm run start:dev auth
+    ports:
+      - '3001:3001'
+    env_file:
+      - ./apps/auth/.env
+    depends_on:
+      - mongodb-primary
+      - mongodb-secondary
+      - mongodb-arbiter
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
       - /usr/src/app/node_modules
 
   rabbitmq:
     image: 'rabbitmq:3.11.16-management'
     ports:
       - 5672:5672
-
 
   mongodb-primary:
     image: 'bitnami/mongodb:5.0'
